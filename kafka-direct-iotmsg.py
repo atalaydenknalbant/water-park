@@ -43,18 +43,10 @@ if __name__ == "__main__":
     ###############
     # Globals
     ###############
-    tempTotal = 0.0
-    tempCount = 0
-    tempAvg = 0.0
-    humTotal = 0.0
-    humCount = 0
-    humAvg = 0.0
-    peopleTotal = 0.0
-    peopleCount = 0
-    peopleAvg = 0.0
-    revTotal = 0.0
-    revCount = 0
-    revAvg = 0.0
+    temp = 0.0
+    humidity = 0.0
+    people = 0
+    revenue = 0.0
     today_date = datetime.datetime.today()
 
     brokers, topic = sys.argv[1:]
@@ -64,76 +56,52 @@ if __name__ == "__main__":
     lines = kvs.map(lambda x: x[1])
     jsonLines = lines.map(lambda x: re.sub(r"\s+", "", x, flags=re.UNICODE))
 
-
-
     ############
     # Processing
     ############
     # foreach function to iterate over each RDD of a DStream
     def process_temp(time, rdd):
-    # Match local function variables to global variables
-        global tempTotal
-        global tempCount
-        global tempAvg
+        global temp
         global today_date
         print("========= %s =========" % str(today_date))
         today_date += datetime.timedelta(days=1)
         tempList = rdd.collect()
         for tempFloat in tempList:
-            tempTotal += float(tempFloat)
-            tempCount += 1
-            tempAvg = tempTotal / tempCount
-            print("Avg Temperature = " + str(tempAvg))
+            temp = float(tempFloat)
+            print("Temperature = " + str(temp))
 
 
     def process_humidity(time, rdd):
-        global humTotal
-        global humCount
-        global humAvg
-        global tempAvg
-        humudity_list = rdd.collect()
-        for humFloat in humudity_list:
-            humTotal += float(humFloat)
-            humCount += 1
-            humAvg = humTotal / humCount
-            print("Avg Humidity = " + str(humAvg))
-        if int(humAvg) > 80 or int(tempAvg) > 78:
-            print("Run Air Conditioner At Max Level")
-            humAvg = 0
-            tempAvg = 0
-        else:
-            pass
+        global temp
+        global humidity
+        humidity_list = rdd.collect()
+        for humFloat in humidity_list:
+            humidity = float(humFloat)
+            print("Humidity = " + str(humidity))
+            if int(humidity) > 80 or int(temp) > 78:
+                print("Run Air Conditioner At Max Level")
+            else:
+                pass
 
     def process_revenue(time, rdd):
-        global revTotal
-        global revCount
-        global revAvg
-        global peopleAvg
+        global revenue
+        global people
         rev_list = rdd.collect()
         for revFloat in rev_list:
-            revTotal += float(revFloat)
-            revCount += 1
-            revAvg = revTotal / revCount
-            print("Avg Revenue = " + str(revAvg))
-        if int(peopleAvg) > 1000 and int(revAvg) > 1000:
-            if int(peopleAvg) * 2 <= int(revAvg):
-                print("Low Income")
-                peopleAvg = 0
-                revAvg = 0
-
-        else:
-            pass
+            revenue = float(revFloat)
+            print("Revenue = " + str(revenue))
+            if int(people) > 1000 and int(revenue) > 1000:
+                if int(people) * 2 >= int(revenue):
+                    print("Low Income")
+            else:
+                pass
 
     def process_totalpeople(time, rdd):
-        global peopleTotal
-        global peopleCount
-        global peopleAvg
+        global people
         people_list = rdd.collect()
-        for peopleFloat in people_list:
-            peopleTotal += float(peopleFloat)
-            peopleCount += 1
-            peopleAvg = peopleTotal / peopleCount
-            print("Avg Total People = " + str(peopleAvg))
+        for peopleint in people_list:
+            people = int(peopleint)
+            print("Total People = " + str(people))
 
 
     # Search for specific IoT data values (assumes jsonLines are split(','))
