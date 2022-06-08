@@ -1,3 +1,3 @@
 # Water park
 ## Summary
-Water park Project to streamline iot data to kafka queues and process them with spark-streaming
+Water park Project to streamline IoT data to Kafka queues and process them with spark-streaming
