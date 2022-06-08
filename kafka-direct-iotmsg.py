@@ -115,7 +115,7 @@ if __name__ == "__main__":
             revCount += 1
             revAvg = revTotal / revCount
             print("Avg Revenue = " + str(revAvg))
-        if int(peopleAvg) != 0 and int(revAvg) != 0:
+        if int(peopleAvg) > 1000 and int(revAvg) > 1000:
             if int(peopleAvg) * 2 <= int(revAvg):
                 print("Low Income")
                 peopleAvg = 0
